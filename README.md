@@ -1,3 +1,5 @@
+# psychCE
+
 ## Coordinated Epistasis implementation
 This repository documents the code used to implement the Coordinated Epsitasis (CE) framework as part of the investigations documented in [this preprint]().
 There are four different implementations of the CE framework described in that work: 
@@ -25,7 +27,7 @@ Code to run the two simulations presented in the pre-print are xxx and xxx.
 ## Meta-analyses
 MTAG and METAL here
 
-## incremental MTAG
+### incremental MTAG
 rG estimation to order the phenotypes and then MTAG details for running the incremental MTAG on lifetimeMDD outcome with MTAG.All phenotypes.
 
 ## genomic Structural Equation Modelling to obtain P-factor PRS into wg-CE
