@@ -137,7 +137,7 @@ fi
 ```
 
 #### Mundlak correction of PRS for CE
-In the UKB, we obtained 10xCV PRS. We found that this introduces a bias in the PRS that needs to be corrected. The correction we implement is the Mundak method, which is described in detail in the Supplementary Text and Methods of the paper. 
+In the UKB, we obtained 10xCV PRS. We found that this introduces a bias in the PRS that needs to be corrected. The correction we implement is the [Mundak method](https://blog.stata.com/2015/10/29/fixed-effects-or-random-effects-the-mundlak-approach/), which is described in detail in the Supplementary Text and Methods of the paper. 
 
 The code used to perform mundlak correction on the PRS data is listed in `mundlak-correction.md`. 
 
