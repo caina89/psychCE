@@ -2,17 +2,22 @@
 
 This repository documents the code used to implement the Coordinated Epsitasis (CE) framework as part of the investigations documented in [this preprint]().
 
-environments used to run these analyses: for CE tests, GWAS and PRSice runs: xxx.yml
-and for gSEM analyses xxx.yml
+environments used to run these analyses: for CE tests, GWAS and PRSice runs: `CE-env.yml`, for gSEM analyses `gSEM-env.yml`, for ldsc [this](https://github.com/bulik/ldsc/blob/master/environment.yml) `environment.yml` file.
 
 these were loaded into submission scripts using 
-source ~/.bashrc
-conda activate (ENVNAME)
+`source ~/.bashrc`
+`conda activate <ENVNAME>`
 
 ## GWAS
-GWAS that lie at the basis of the PRS that are used as input for pc-CE and wg-CE tests were obtained using plink2 {insert link}
+GWAS that lie at the basis of the PRS that are used as input for pc-CE and wg-CE tests were obtained using [plink2](https://www.cog-genomics.org/plink/2.0/)
 
 ```bash
+bfile= #genotype files, plink format, excluding extension
+phenofile= #binary phenotype file, header: FID IID PHENO
+covar= #covariate file, header FID IID cov1 cov2 ...
+outfile= #full basename of output file to be created
+memory_use= #on cluster submission to match with specifications from job submission to avoid out-of-memory job failure
+
 ## plink
 ${plinkdir}/plink2 \
 --bfile "$bfile" \
@@ -28,49 +33,60 @@ ${plinkdir}/plink2 \
 ```
 
 ## GWAS meta-analyses
-to boost power, multiple meta-analyses were used. For the first set of MTAG analyses, with MTAG.All, sumstats were obtained from this paper (cite).
-However, incremental MTAG analyses using those input phenotypes in that meta-analyses was run for this project specifically and is described in xxx file. 
+We performed multiple meta-analyses using both METAL and MTAG, the latter also in an incremental manner. 
 
-furthermore, five psychiatric disorders were meta-analyzed using mtag as well, to compare with gSEM method and the code for this is listed xxx.
+### METAL
+The [METAL](https://genome.sph.umich.edu/wiki/METAL_Documentation) commanline tool was used to perform inverse-variance weigthed meta-analyses on PGC and iPSYCH summary statistics. The code used to run this is listed in the file `meta-analysis_METAL.md` in this Github.
 
-## genomic Structural Equation Moddeling (gSEM)
-to investigate whether p-factor is heterogeneous. 
-is at the level of input sumstats, GWAS on common P factor was obtained, code listed xxxx. 
-factor loadings obtained using xxx. 
+### MTAG
+The [MTAG] package was used to perform rG weighted meta-analysis across psychiatric disorders. Code used to run this on iPSYCH and PGC summary statistics: 
 
-## Genetic Liability Scores
-### Polygenic Risk Scores
-were obtained from GWAS (see above), to deal with genotype quality issues in iPSYCH, upscaled to check if it first error'd out and then re-run with the adjusted file. 
-
-if QC already done, like analyses that include munging with LDSC (such as gSEM), or where genotype quality control already excluded these variants, a single PRSice command was used:
 ```bash
-Rscript ${prsicedir}/PRSice.R \
---prsice ${prsicedir}/PRSice_linux \
---base ${sumstats} \
---cov  ${covar} \
---extract ${QCfile} \
---target ${bfile} \
---pheno ${phenofile} \
---score "avg" \
---binary-target T \
---beta \
---a1 ${a1} \
---a2 ${a2} \
---pvalue ${p} \
---snp ${rsid} \
---chr ${chr} \
---stat ${beta} \
---seed 8 \
---bar-levels 1 \
---fastscore \
---num-auto 22 \
---print-snp \
---thread 1 \
---out ${outdir}/${meta}_5disPGC_${target}_${pheno}_${prev}_wholegenome
+sumstats_flag= #comma-separated list of input summary statistics full filenames -- MTAG will run on all input sumstas as focals once, listing them as trait_1, trait_2 output, matching input list order.
+
+outfile=${outdir}/MTAG_5disPGC #full basename of output sumstats
+
+#location of MTAG installation
+mtag_dir="xxx/mtag"
+
+${mtag_dir}/mtag.py \
+--sumstats ${sumstats_flag} \
+--n_min 0 \
+--std_betas \
+--cores 1 \
+--stream_stdout \
+--verbose \
+--force \
+--snp_name ID \
+--a1_name A1 \
+--a2_name A2 \
+--eaf_name EAF \
+--z_name Z_STAT \
+--n_name N_col \
+--chr_name CHR \
+--bpos_name POS \
+--out ${outfile}
 
 ```
 
-all other analyses would include an if statement to check whether QC was needed and would use PRSice to do that QC. 
+### incremental MTAG
+To perform incremental MTAG, first phenotypes are ranked by their rG with the focal phenotype (LifetimeMDD in our case) and then incrementally meta-analyses are performed on those ranked phenotypes.
+Code description in `incremental-MTAG.md`. 
+
+
+## genomic Structural Equation Moddeling (gSEM)
+to investigate whether p-factor is heterogeneous. 
+is at the level of input sumstats, GWAS on common P factor was obtained, as well as factor loadings of the model. For this, code is described in `meta-analyses_gSEM.md`
+
+## Genetic Liability Scores
+We used two different methods to estimate genetic liability to an outcome. 
+1. Polygenic Risk Scores
+2. Pearson-Aitkens Family Genetic Risk Scores. 
+
+### Polygenic Risk Scores
+PRS were obtained from GWASs or meta-analyzed GWASs. We used PRSice-2 to obtain them. 
+For those that were not munged before, there is a risk that there were still some duplicate SNPs and other minor issues. 
+PRSice-2 checks for these, and the outputs a file that lists those SNPs to be excluded. We utilize this functionality by running PRSice-2 once, and if it creates the output file, re-run PRSice-2 with an `--exclude` flag added like so: 
 
 ```bash
 Rscript ${packagebase}/PRSice/PRSice.R \
@@ -121,11 +137,12 @@ fi
 ```
 
 ### PA-FGRS
-were obtained by morten krebs following their paper and instructions (cite).
-full code is listed in the xxx file. 
+PA-FGRS were obtained following paper and [instructions listed here. ](https://github.com/BioPsyk/PAFGRS)
+Code to obtain them in iPSYCH in our application is provided in `PAFGRS.R`
 
 
 ## Coordinated Epistasis implementation (and mundlak correction)
+
 
 There are four different implementations of the CE framework described in that work: 
 
