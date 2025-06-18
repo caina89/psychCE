@@ -85,6 +85,7 @@ We used two different methods to estimate genetic liability to an outcome.
 
 ### Polygenic Risk Scores
 PRS were obtained from GWASs or meta-analyzed GWASs. We used PRSice-2 to obtain them. 
+After obtaining the scores, we use `scale()` in R to normalize them to mean 0 and standard deviation 1.
 For those that were not munged before, there is a risk that there were still some duplicate SNPs and other minor issues. 
 PRSice-2 checks for these, and the outputs a file that lists those SNPs to be excluded. We utilize this functionality by running PRSice-2 once, and if it creates the output file, re-run PRSice-2 with an `--exclude` flag added like so: 
 
@@ -144,7 +145,7 @@ The code used to perform mundlak correction on the PRS data is listed in `mundla
 ### PA-FGRS
 PA-FGRS were obtained following paper and [instructions listed here. ](https://github.com/BioPsyk/PAFGRS)
 Code to obtain them in iPSYCH in our application is provided in `PAFGRS.R`
-
+Note that prior to use for CE tests we normalized the PA-FGRS to mean 0 and standard deviation 1 with `scale()` in R. 
 
 ## Coordinated Epistasis implementation (and mundlak correction)
 We implement CE framework in different ways, but the code to run in essence is the same for all instances. What changes per analysis is the input. 
