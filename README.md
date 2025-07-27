@@ -1,6 +1,6 @@
 # psychCE
 
-This repository documents the code used to implement the Coordinated Epsitasis (CE) framework on MDD in UK Biobank and five psychiatric disorders in the iPSYCH dataset, as detailed in our preprint ["Genetic risk effects on psychiatric disorders act in sets"](https://www.medrxiv.org/content/10.1101/2025.07.23.25332043v1)
+This repository documents the code used to implement the Coordinated Epsitasis (CE) framework on MDD in UK Biobank and five psychiatric disorders in the iPSYCH dataset, as detailed in our preprint ["Genetic risk effects on psychiatric disorders act in sets"](https://www.medrxiv.org/content/10.1101/2025.07.23.25332043v1).
 
 environments used to run these analyses: for CE tests, GWAS and PRSice runs: `CE-env.yml`, for gSEM analyses `gSEM-env.yml`, for ldsc [this](https://github.com/bulik/ldsc/blob/master/environment.yml) `environment.yml` file.
 
