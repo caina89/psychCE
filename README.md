@@ -87,7 +87,7 @@ We used two different methods to estimate genetic liability to an outcome.
 PRS were obtained from GWASs or meta-analyzed GWASs. We used PRSice-2 to obtain them. 
 After obtaining the scores, we use `scale()` in R to normalize them to mean 0 and standard deviation 1.
 For those that were not munged before, there is a risk that there were still some duplicate SNPs and other minor issues. 
-PRSice-2 checks for these, and the outputs a file that lists those SNPs to be excluded. We utilize this functionality by running PRSice-2 once, and if it creates the output file, re-run PRSice-2 with an `--exclude` flag added like so: 
+PRSice-2 checks for these, and the outputs a file that lists those SNPs to be excluded. We kept to default settings for clumping and thresholding. We utilize this functionality by running PRSice-2 once, and if it creates the output file, re-run PRSice-2 with an `--exclude` flag added like so: 
 
 ```bash
 Rscript ${packagebase}/PRSice/PRSice.R \
