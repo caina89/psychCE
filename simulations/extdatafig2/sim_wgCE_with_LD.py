@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Simulation v2: wg-CE calibration with realistic LD — clumped-PRS design.
+Simulation: wg-CE calibration with realistic LD — clumped-PRS design.
 
 Design:
   - Load per-chromosome non-LD-pruned .bed files (real LD structure preserved)
@@ -16,7 +16,7 @@ Design:
   - Compare to oracle CE (using true liabilities)
 
 Usage:
-    python sim_wgCE_with_LD_v2.py \
+    python sim_wgCE_with_LD.py \
         --bed-prefix '/path/to/ukb_imp_v3_chr{CHR}.qced' \
         --chromosomes 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22 \
         --out results_LD_clumped --n-causal 1000 --n-prs-snps 100000 \
